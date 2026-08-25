@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router"
+import { Navigate, useNavigate } from "react-router"
 import { useDispatch, useSelector } from 'react-redux'
+import {loginUserApi} from '../api/authApi'
 import { addUser } from "../state/authSlice"
+import { toast } from "react-toastify"
+
 export const authHook = () =>{
 
     const [RegisterUser, setRegisterUser] = useState(
         JSON.parse(localStorage.getItem("registeredUser")) || [])
   let navigate = useNavigate()
   let dispatch = useDispatch()
-
-
  let {
     register,
     handleSubmit,
@@ -18,34 +19,16 @@ export const authHook = () =>{
     formState:{errors},
  } = useForm()
 
-  const loginForm = (data)=>{
-  let user = RegisterUser.find((val)=>{
-    return val.email === data.email && val.password === data.password })
 
-  if(!user){
-    console.log("error")
-  return 
-  }
-   
-  dispatch(addUser(user))
-  navigate("/main/products")
-  localStorage.setItem("loggedInUser",JSON.stringify(user))
-  reset()
- }
-
- let addUsers = useSelector((store)=> store.addUser)
-
- let hydration = () =>{
-    if(!addUsers){
-    let reduxUser = JSON.parse(localStorage.getItem("loggedInUser"))
-    dispatch(addUser(reduxUser))
-    }   
- }
-
- useEffect(() => {
-    hydration()
- }, [])
- 
+  const loginForm = async (data)=>{
+    try {
+         let response = await loginUserApi(data)
+         dispatch(addUser(response))
+         toast.success("User Logged in")
+    } catch (error) {
+        console.log("form api error", error)
+    }
+}
 
  const registerForm = (data)=>{
     let arr = [...RegisterUser,data]
@@ -54,14 +37,17 @@ export const authHook = () =>{
  
  }
 
+
+
   return {
-    navigate,
+     navigate,
       register,
       handleSubmit,
       reset,
       errors,
       loginForm,
       registerForm,
-      hydration
+    
   }
 }
+

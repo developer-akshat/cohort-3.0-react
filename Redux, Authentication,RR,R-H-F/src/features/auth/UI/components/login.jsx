@@ -10,16 +10,6 @@ const Login = () => {
              register,
              loginForm,
          } = authHook()
-
-         const user = useSelector((state)=> state.auth?.addUser)
-
-         useEffect(() => {
-           if(user){
-            navigate("/main/products",
-                {replace:true}
-            )
-           }
-         }, [user,navigate])
          
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -42,11 +32,11 @@ const Login = () => {
             </label>
 
             <input
-            {...register("email",{
-                required: "Email is required",
+            {...register("username",{
+                required: "Username is required",
             })}
-              type="email"
-              placeholder="Enter your email"
+              type="text"
+              placeholder="Enter your username"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.name && <p className="text-red-500">{errors.name.message}</p>}
