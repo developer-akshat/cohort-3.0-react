@@ -8,6 +8,7 @@ const App = () => {
 
 const [Products, setProducts] = useState(null)
 const [Page, setPage] = useState(0)
+
   const getAllproducts = async()=>{
     try {
       console.log("api calling")
